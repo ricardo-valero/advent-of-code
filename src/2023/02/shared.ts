@@ -10,13 +10,9 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`
 export const getInput = () => readFileSyncRelative(import.meta.url, "./input.txt")
 
 export const KEY = "Game" as const
-export const COLORS = ["red", "green", "blue"] as const
+export const COLOR_KEYS = ["red", "green", "blue"] as const
 
-export type Color = {
-  red: number
-  green: number
-  blue: number
-}
+export type Set = Record<typeof COLOR_KEYS[number], number>
 
 export function parseKeyValues(text: string) {
   const [keyText, ...valuesText] = text.split(":")
@@ -28,18 +24,17 @@ function parseKey(text: string) {
 }
 
 function parseValues(text: string) {
-  const result: Array<Color> = []
-  for (const set of text.split(/[;]/)) {
-    const r = { red: 0, green: 0, blue: 0 }
-    for (const cube of set.trim().split(/[,]/)) {
-      for (const color of COLORS) {
+  const result = new Array<Set>()
+  for (const set of text.split(";")) {
+    const count = { red: 0, green: 0, blue: 0 }
+    for (const cube of set.trim().split(",")) {
+      for (const color of COLOR_KEYS) {
         if (cube.includes(color)) {
-          const q = cube.split(color)[0].trim()
-          r[color] += Number(q)
+          count[color] += parseInt(cube.split(color)[0].trim())
         }
       }
     }
-    result.push(r)
+    result.push(count)
   }
   return result
 }

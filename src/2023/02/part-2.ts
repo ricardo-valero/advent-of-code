@@ -1,10 +1,10 @@
-import type { Color } from "./shared"
-import { COLORS, getInput, getSample, parseKeyValues } from "./shared"
+import type { Set } from "./shared"
+import { COLOR_KEYS, getInput, getSample, parseKeyValues } from "./shared"
 
-function findMax(sets: Array<Color>) {
-  const max: Color = { red: 0, green: 0, blue: 0 }
+function findMax(sets: Array<Set>) {
+  const max: Set = { red: 0, green: 0, blue: 0 }
   for (const set of sets) {
-    for (const color of COLORS) {
+    for (const color of COLOR_KEYS) {
       if (set[color] > max[color]) {
         max[color] = set[color]
       }

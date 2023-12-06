@@ -46,8 +46,10 @@ function program(text: string) {
 }
 
 function main() {
-  console.table(program(sample.trim()))
-  console.table(program(getInput().trim()))
+  console.table([
+    program(sample.trim()),
+    program(getInput().trim())
+  ])
 }
 
 main()

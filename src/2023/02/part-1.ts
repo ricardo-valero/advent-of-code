@@ -1,14 +1,14 @@
-import type { Color } from "./shared"
-import { COLORS, getInput, getSample, parseKeyValues } from "./shared"
+import type { Set } from "./shared"
+import { COLOR_KEYS, getInput, getSample, parseKeyValues } from "./shared"
 
-const configuration: Readonly<Color> = {
+const configuration: Readonly<Set> = {
   red: 12,
   green: 13,
   blue: 14
 }
 
-function validate(sets: Array<Color>, configuration: Color) {
-  for (const color of COLORS) {
+function validate(sets: Array<Set>, configuration: Set) {
+  for (const color of COLOR_KEYS) {
     for (const set of sets) {
       if (set[color] > configuration[color]) {
         return false
@@ -31,8 +31,10 @@ function program(text: string) {
 }
 
 function main() {
-  console.table(program(getSample().trim()))
-  console.table(program(getInput().trim()))
+  console.table([
+    program(getSample().trim()),
+    program(getInput().trim())
+  ])
 }
 
 main()
