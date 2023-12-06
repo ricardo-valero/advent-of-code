@@ -1,10 +1,4 @@
-import * as fs from "node:fs"
-import * as path from "node:path"
-import * as url from "node:url"
-
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const input = fs.readFileSync(path.join(__dirname, "./input.txt"), "utf-8")
+import { digitsToNumber, getInput } from "./shared"
 
 const sample = `two1nine
 eightwothree
@@ -27,43 +21,33 @@ const digitMap: Record<number, Array<string>> = {
   9: ["9", "nine"]
 }
 
-function joinInts(ints: Array<number>) {
-  return parseInt(ints.join(""))
-}
-
-function solve(text: string) {
+function parseDigits(text: string) {
   const digits = Array<number>()
   let currentString = ""
-
   for (const char of text) {
     currentString += char
-    for (const [key, value] of Object.entries(digitMap)) {
-      if (value.some((v) => currentString.endsWith(v))) {
+    for (const [key, values] of Object.entries(digitMap)) {
+      if (values.some((value) => currentString.endsWith(value))) {
         digits.push(Number(key))
       }
     }
   }
-
   return digits
 }
 
 function program(text: string) {
   let result = 0
-  // const table = []
   for (const line of text.split("\n")) {
-    const match = solve(line.trim())
-    const firstLast = [match[0], match[match.length - 1]]
-    const number = joinInts(firstLast)
-    // table.push(match)
+    const digits = parseDigits(line.trim())
+    const number = digitsToNumber(digits)
     result += number
   }
-  // console.table(table)
   return result
 }
 
 function main() {
   console.table(program(sample.trim()))
-  console.table(program(input.trim()))
+  console.table(program(getInput().trim()))
 }
 
 main()

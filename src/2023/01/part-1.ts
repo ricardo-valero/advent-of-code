@@ -1,17 +1,11 @@
-import * as fs from "node:fs"
-import * as path from "node:path"
-import * as url from "node:url"
-
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const input = fs.readFileSync(path.join(__dirname, "./input.txt"), "utf-8")
+import { digitsToNumber, getInput } from "./shared"
 
 const sample = `1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet`
 
-const integerMap = {
+const digitMap: Record<string, number> = {
   "0": 0,
   "1": 1,
   "2": 2,
@@ -22,35 +16,31 @@ const integerMap = {
   "7": 7,
   "8": 8,
   "9": 9
-} as const
+}
 
-function matchWithIntegerMap(text: string) {
-  const numbers = Array<number>()
-  for (let j = 0; j < text.length; j++) {
-    const char = text[j]
-    if (char in integerMap) {
-      numbers.push(integerMap[char as keyof typeof integerMap])
+function parseDigits(text: string) {
+  const digits = Array<number>()
+  for (const char of text) {
+    if (char in digitMap) {
+      digits.push(digitMap[char])
     }
   }
-  return numbers
+  return digits
 }
 
-function joinInts(ints: Array<number>) {
-  return parseInt(ints.join(""))
-}
-
-function main(input: string) {
-  const lines = input.split("\n")
+function program(text: string) {
   let result = 0
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    const match = matchWithIntegerMap(line)
-    const firstLast = [match[0], match[match.length - 1]]
-    const number = joinInts(firstLast)
+  for (const line of text.split("\n")) {
+    const digits = parseDigits(line)
+    const number = digitsToNumber(digits)
     result += number
   }
   return result
 }
 
-console.table(main(sample))
-console.table(main(input))
+function main() {
+  console.table(program(sample.trim()))
+  console.table(program(getInput().trim()))
+}
+
+main()

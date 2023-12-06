@@ -31,8 +31,8 @@ function program(text: string) {
 }
 
 function main() {
-  console.table(program(getSample()))
-  console.table(program(getInput()))
+  console.table(program(getSample().trim()))
+  console.table(program(getInput().trim()))
 }
 
 main()
