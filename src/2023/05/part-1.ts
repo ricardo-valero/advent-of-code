@@ -1,46 +1,49 @@
+import type { DataKey } from "./shared"
 import { getInput, getSample, parseDataMaps, parseDataSeed } from "./shared"
+
+// function buildPath(dataMaps: Array<readonly [DataKey, Array<Array<number>>]>, srcValue: number) {
+//   const path = Array<number>()
+//   path.push(srcValue)
+//   for (const [_, value] of dataMaps) {
+//     const curr = path[path.length - 1]
+//     const match = findDstValue(value, curr)
+//     path.push(match)
+//   }
+//   return path
+// }
+
+function findPath(dataMaps: Array<readonly [DataKey, Array<Array<number>>]>, srcValue: number) {
+  for (const [_, value] of dataMaps) {
+    srcValue = findDstValue(value, srcValue)
+  }
+  return srcValue
+}
+
+function findDstValue(map: Array<Array<number>>, curr: number) {
+  for (const [dstStart, srcStart, rangeLength] of map) {
+    if (srcStart <= curr && curr <= srcStart + rangeLength) {
+      return (curr - srcStart) + dstStart
+    }
+  }
+  return curr
+}
 
 function program(text: string) {
   const dataSeed = parseDataSeed(text)
   const dataMaps = parseDataMaps(text)
-
   const seeds = dataSeed[1].flat()
-  const result = []
-  for (const seed of seeds.flat()) {
-    const path = Array<number>()
-    path.push(seed)
-    for (const [key, value] of dataMaps) {
-      if (key.destination) {
-        let newNumber = undefined
-        const curr = path[path.length - 1]
-        for (const [dstRangeStart, srcRangeStart, rangeLength] of value) {
-          if (
-            srcRangeStart <= curr
-            && curr <= srcRangeStart + rangeLength
-          ) {
-            newNumber = (curr - srcRangeStart) + dstRangeStart
-            break
-          }
-        }
-        if (newNumber) {
-          path.push(newNumber)
-        } else {
-          path.push(curr)
-        }
-      }
-    }
+  const result = new Array<number>()
+  for (const seed of seeds) {
+    const path = findPath(dataMaps, seed)
     result.push(path)
   }
-
-  const a = result.map((x) => x[x.length - 1]).sort((a, b) => a - b)
-
-  return a[0]
+  return result.sort((a, b) => a - b)[0]
 }
 
 function main() {
   console.table([
-    program(getSample().trim())
-    // program(getInput().trim())
+    program(getSample().trim()),
+    program(getInput().trim())
   ])
 }
 

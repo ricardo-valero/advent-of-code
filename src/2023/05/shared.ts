@@ -51,7 +51,7 @@ function parseSeedValues(text: string) {
 
 export type DataKey = {
   source: string
-  destination?: string
+  destination: string
 }
 
 export function parseDataMaps(text: string) {
@@ -68,10 +68,10 @@ function parseKeyValues(text: string) {
 }
 
 function parseKey(text: string): DataKey {
-  const regex = /(?:(\w+)-\w+-(\w+)|(\w+))/g
+  const regex = /(\w+)-\w+-(\w+)/g
   const matches = [...text.matchAll(regex)]
   const x = matches.flat()
-  return { source: x[3] ?? x[1], destination: x[2] ?? undefined } as const
+  return { source: x[1], destination: x[2] } as const
 }
 
 function parseValues(text: string) {

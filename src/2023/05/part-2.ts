@@ -1,49 +1,64 @@
-import { getInput, getSample, parseData } from "./shared"
+import type { DataKey } from "./shared"
+import { getInput, getSample, parseDataMaps, parseDataSeed } from "./shared"
 
-function program(text: string) {
-  const data = parseData(text)
-  const [[_, seedsData]] = data
-  const seeds = seedsData.flat()
-  const result = []
-  for (let i = 0; i < seeds.length; i += 2) {
-    const seedRangeStart = seeds[i]
-    const seedRangeLength = seeds[i + 1]
-    const path = Array<number>()
-    path.push(seedRangeStart)
-    for (const [key, value] of data) {
-      if (key.destination) {
-        let newNumber = undefined
-        const curr = path[path.length - 1]
-        for (const [dstRangeStart, srcRangeStart, rangeLength] of value) {
-          if () {
-            
-          }
-          if (
-            srcRangeStart <= curr
-            && curr <= srcRangeStart + rangeLength
-          ) {
-            newNumber = (curr - srcRangeStart) + dstRangeStart
-            break
-          }
-        }
-        if (newNumber) {
-          path.push(newNumber)
-        } else {
-          path.push(curr)
-        }
-      }
-    }
-    result.push(path)
+function findPath(
+  dataMaps: Array<readonly [DataKey, Array<Array<number>>]>,
+  srcValue: number
+) {
+  for (const [_, value] of dataMaps) {
+    srcValue = getDstValue(value, srcValue)
   }
-  const a = result.map((x) => x[x.length - 1]).sort((a, b) => a - b)
-  return a[0]
+  return srcValue
+}
+
+function getDstValue(
+  map: Array<Array<number>>,
+  srcValue: number
+) {
+  for (const [dstStart, srcStart, rangeLength] of map) {
+    if (srcStart <= srcValue && srcValue <= srcStart + rangeLength) {
+      return (srcValue - srcStart) + dstStart
+    }
+  }
+  return srcValue
+}
+
+function program(text: string, index = 0) {
+  const start = performance.now()
+  const dataSeed = parseDataSeed(text)
+  const dataMaps = parseDataMaps(text)
+  const seeds = dataSeed[1].flat()
+  let result: number | undefined = undefined
+  const i = index * 2
+  // for (let i = 0; i < seeds.length; i += 2) {
+  const seedRangeStart = seeds[i]
+  const seedRangeLength = seeds[i + 1]
+  for (let seedValue = seedRangeStart; seedValue < seedRangeStart + seedRangeLength; seedValue++) {
+    const path = findPath(dataMaps, seedValue)
+    if (!result || result > path) {
+      result = path
+    }
+  }
+  // }
+  const end = performance.now()
+  const time = Math.floor((end - start) / 1000)
+  console.table([index, time, result])
+  return result
 }
 
 function main() {
-  console.table([
-    program(getSample().trim())
-    // program(getInput().trim())
-  ])
+  // program(getSample().trim())
+  program(getInput().trim(), 0)
 }
+
+/*
+node
+0, 37, 529571705
+
+bun
+[ 0, 5, 529571705 ]
+[ 1, 29, 386490336 ]
+[ 2, 204, 692277668 ]
+*/
 
 main()
