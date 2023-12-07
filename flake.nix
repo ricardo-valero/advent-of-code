@@ -29,6 +29,7 @@
           buildInputs = with pkgs; [
             nodejs
             corepackEnable
+            bun
           ];
         };
       };
