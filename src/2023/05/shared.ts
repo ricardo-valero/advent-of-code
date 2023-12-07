@@ -37,13 +37,25 @@ humidity-to-location map:
 60 56 37
 56 93 4`
 
-type Key = {
-  source: string
-  destination: string | "null"
+export function parseDataSeed(text: string) {
+  const regex = /(\w+):\s*([\s\d]+)/g
+  const match = text.match(regex)
+  const data = parseSeedValues(match ? match[0] : "")
+  return data
 }
 
-export function parseData(text: string) {
-  const regex = /([\w\- ]+):\s*([\s\d]+)/g
+function parseSeedValues(text: string) {
+  const part = text.split(":")
+  return [part[0].trim(), parseNumbers(part[1].trim())] as const
+}
+
+export type DataKey = {
+  source: string
+  destination?: string
+}
+
+export function parseDataMaps(text: string) {
+  const regex = /([\w\- ]+)map:\s*([\s\d]+)/g
   const matches = [...text.matchAll(regex)]
   const data = matches.map((x) => parseKeyValues(x[0]))
   return data
@@ -55,11 +67,11 @@ function parseKeyValues(text: string) {
   return [parseKey(part[0].trim()), parseValues(part[1].trim())] as const
 }
 
-function parseKey(text: string): Key {
+function parseKey(text: string): DataKey {
   const regex = /(?:(\w+)-\w+-(\w+)|(\w+))/g
   const matches = [...text.matchAll(regex)]
   const x = matches.flat()
-  return { source: x[3] ?? x[1], destination: x[2] } as const
+  return { source: x[3] ?? x[1], destination: x[2] ?? undefined } as const
 }
 
 function parseValues(text: string) {

@@ -1,13 +1,15 @@
-import { getInput, getSample, parseData } from "./shared"
+import { getInput, getSample, parseDataMaps, parseDataSeed } from "./shared"
 
 function program(text: string) {
-  const data = parseData(text)
-  const [[_, seeds]] = data
+  const dataSeed = parseDataSeed(text)
+  const dataMaps = parseDataMaps(text)
+
+  const seeds = dataSeed[1].flat()
   const result = []
   for (const seed of seeds.flat()) {
     const path = Array<number>()
     path.push(seed)
-    for (const [key, value] of data) {
+    for (const [key, value] of dataMaps) {
       if (key.destination) {
         let newNumber = undefined
         const curr = path[path.length - 1]
@@ -37,8 +39,8 @@ function program(text: string) {
 
 function main() {
   console.table([
-    program(getSample().trim()),
-    program(getInput().trim())
+    program(getSample().trim())
+    // program(getInput().trim())
   ])
 }
 
