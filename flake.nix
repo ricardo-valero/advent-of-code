@@ -26,10 +26,14 @@
 
       devShells = {
         default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            (with ocamlPackages; [ocaml findlib dune_2 ocaml-lsp])
+          ];
           buildInputs = with pkgs; [
             nodejs
             corepackEnable
             bun
+            (with ocamlPackages; [ocamlformat ocamlgraph])
           ];
         };
       };
