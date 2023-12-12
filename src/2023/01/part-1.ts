@@ -1,3 +1,4 @@
+import { readStandardInput } from "../utils"
 import { digitsToNumber, getInput } from "./shared"
 
 const sample = `1abc2
@@ -38,11 +39,9 @@ function program(text: string) {
   return result
 }
 
-function main() {
+readStandardInput((input) => {
   console.table([
     program(sample.trim()),
-    program(getInput().trim())
+    program(input.trim())
   ])
-}
-
-main()
+})

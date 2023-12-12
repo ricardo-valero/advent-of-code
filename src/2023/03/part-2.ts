@@ -1,10 +1,10 @@
 import { getInput, getSample } from "./shared"
 
 const state1d = [-1, 0, +1] as const
-const state2d = state1d.map((row) => state1d.map((col) => [col, row])).flat()
+// const state2d = state1d.map((row) => state1d.map((col) => [col, row])).flat()
 
 function parseText(text: string) {
-  const coords = new Array<[number, number]>()
+  // const coords = new Array<[number, number]>()
   const result = new Array<number>()
   const lines = text.split("\n")
   for (let row = 0; row < lines.length; row++) {
