@@ -1,4 +1,5 @@
 import { readStandardInput } from "../utils"
+import { parseData } from "./shared"
 
 const sample = `LR
 
@@ -11,33 +12,17 @@ const sample = `LR
 22Z = (22B, 22B)
 XXX = (XXX, XXX)` as const
 
-function parseData(text: string) {
-  const parts = text.split("\n\n")
-  return [parseInstructions(parts[0]), parseNodeMaps(parts[1])] as const
+// Function to calculate the greatest common divisor (GCD)
+function gcd(a: number, b: number): number {
+  return b === 0 ? a : gcd(b, a % b)
 }
 
-function parseInstructions(text: string) {
-  const parts = text.split("")
-  return parts
+// Function to calculate the lowest common multiple (LCM)
+function lcm(a: number, b: number): number {
+  return Math.abs(a * b) / gcd(a, b)
 }
 
-function parseNodeMaps(text: string) {
-  const parts = text.split("\n")
-  return parts.map(parseKeyValues)
-}
-
-function parseKeyValues(text: string) {
-  const parts = text.split("=")
-  const key = parts[0].trim()
-  const match = parts[1].match(/(\w+), (\w+)/)
-  const values = match ? [match[1], match[2]] as const : [] as const
-  return [key, values] as const
-}
-
-// const instructionMap = {
-//   [-1]: "L",
-//   [+1]: "R"
-// } as const
+const instructionMap = ["L", "R"] as const
 
 function program(text: string) {
   const data = parseData(text)
@@ -47,23 +32,31 @@ function program(text: string) {
 
   const starts = nodes.flatMap((node, i) => node[0].endsWith("A") ? [i] : [])
   const ends = nodes.flatMap((node, i) => node[0].endsWith("Z") ? [i] : [])
-
-  let currs = starts
-  let i = 0
-
-  console.log({ start: starts, end: ends })
-
-  while (currs.join(",") !== ends.join(",")) {
-    const instruction = instructions[i % instructions.length]
-    const move = instruction === "L" ? 0 : instruction === "R" ? 1 : -1
-    if (move === -1) throw Error("Invalid move")
-    const nexts = currs.map((curr) => nodes[curr][1][move])
-    currs = nodes.flatMap((node, i) => nexts.includes(node[0]) ? [i] : [])
-    // console.log({ i, next, curr })
-    i++
-    // if (i > 10) break
+  const limit = instructions.length * nodes.length
+  const counts = []
+  for (const start of starts) {
+    for (const end of ends) {
+      let curr = start
+      let count = 0
+      while (curr !== end) {
+        const instruction = instructionMap.indexOf(
+          instructions[count % instructions.length] as typeof instructionMap[number]
+        )
+        if (instruction === -1) throw Error("Invalid move")
+        const next = nodes[curr][1][instruction]
+        curr = nodes.findIndex((node) => node[0] === next)
+        count++
+        if (count > limit) {
+          count = Infinity
+          break
+        }
+      }
+      if (count !== Infinity) counts.push(count)
+    }
   }
-  console.log(i)
+  const result = counts.reduce(lcm)
+  console.log(result)
+  return result
 }
 
 program(sample)
