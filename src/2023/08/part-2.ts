@@ -24,6 +24,7 @@ function lcm(a: number, b: number): number {
 
 const instructionMap = ["L", "R"] as const
 
+// TODO: this works but it is slow
 function program(text: string) {
   const data = parseData(text)
 
