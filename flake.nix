@@ -33,6 +33,7 @@
             nodejs
             corepackEnable
             bun
+            python3
             (with ocamlPackages; [ocamlformat ocamlgraph])
           ];
         };
