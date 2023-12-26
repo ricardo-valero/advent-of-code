@@ -50,21 +50,3 @@ export function generatePairs(
 export function manhattanDistance(p1: [number, number], p2: [number, number]) {
   return Math.abs(p2[0] - p1[0]) + Math.abs(p2[1] - p1[1])
 }
-
-// Other stuff
-
-// function factorial(n: number): number {
-//   return (n === 0 || n === 1)
-//     ? 1
-//     : n * factorial(n - 1)
-// }
-
-// function combination(n: number, k: number) {
-//   return (k === 0 || k === n)
-//     ? 1
-//     : factorial(n) / (factorial(k) * factorial(n - k))
-// }
-
-// function euclideanDistance(p1: [number, number], p2: [number, number]) {
-//   return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2))
-// }
