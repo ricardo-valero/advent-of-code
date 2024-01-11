@@ -7,16 +7,22 @@
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
+
+    roc = {
+      url = "github:roc-lang/roc";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     flake-utils,
+    roc,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
+      rocPkgs = roc.packages.${system};
       corepackEnable = pkgs.runCommand "corepack-enable" {} ''
         mkdir -p $out/bin
         ${pkgs.nodejs}/bin/corepack enable --install-directory $out/bin
@@ -35,6 +41,7 @@
             bun
             python3
             (with ocamlPackages; [ocamlformat ocamlgraph])
+            rocPkgs.cli
           ];
         };
       };
