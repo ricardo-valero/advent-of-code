@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "ocamllabs.ocaml-platform",
-        "ivandemchenko.roc-lang-unofficial"
+        "ivandemchenko.roc-lang-unofficial",
+        "stateful.runme"
     ]
 }
