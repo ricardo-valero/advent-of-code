@@ -41,8 +41,11 @@
             bun
             python3
             (with ocamlPackages; [ocamlformat ocamlgraph])
-            rocPkgs.cli
+            (with rocPkgs; [cli lang-server])
           ];
+          shellHook = ''
+            export ROC_LSP_PATH=${rocPkgs.lang-server}/bin/roc_ls
+          '';
         };
       };
     });
