@@ -14,7 +14,7 @@ Nix has made my life so much easier, I just don't have to worry about my environ
 
 Just a bit weird from time to time
 
-Right now I'm also using [`direnv`](https://direnv.net) with [`flakes`](https://nixos.wiki/wiki/Flakes) which is still "experimental"
+Right now I'm also using [`direnv`](https://direnv.net) with [`flakes`](https://nixos.wiki/wiki/Flakes) which is still "experimental" 🙄
 
 I still don't know why I don't use devenv. `¯\_(ツ)_/¯`
 
@@ -31,7 +31,7 @@ I am hoping I can use [`Effect`](https://www.effect.website)... or at least refa
 My current setup is [`corepack`](https://github.com/nodejs/corepack) with [`pnpm`](https://pnpm.io) as a package manager and [`tsx`](https://github.com/privatenumber/tsx) to execute scripts without generating JavaScript files
 
 ```bash {"id":"01HKZG35EKWQ568CYG5RF5TRBF"}
-pnpm tsx hello.ts < input.txt
+pnpm tsx hello.ts < data.txt
 ```
 
 ### [Bun](https://bun.sh)
@@ -39,7 +39,7 @@ pnpm tsx hello.ts < input.txt
 I like Bun ❤️
 
 ```bash {"id":"01HKZFPQ79WRRDQ1AF00JCQTBA"}
-bun run hello.ts < input.txt
+bun run hello.ts < data.txt
 ```
 
 ## OCaml
@@ -69,7 +69,7 @@ I also want to try Python but with nix
 do i need poetry? https://www.youtube.com/watch?v=oqXWrkvZ59g
 
 ```bash {"id":"01HKZFPQ79WRRDQ1AF077DZCSZ"}
-python hello.py < input.txt
+python hello.py < data.txt
 ```
 
 ## Go

@@ -3,50 +3,51 @@
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
-
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-    };
-
     roc = {
       url = "github:roc-lang/roc";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
   outputs = {
-    self,
     nixpkgs,
-    flake-utils,
     roc,
     ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-      rocPkgs = roc.packages.${system};
-      corepackEnable = pkgs.runCommand "corepack-enable" {} ''
-        mkdir -p $out/bin
-        ${pkgs.nodejs}/bin/corepack enable --install-directory $out/bin
-      '';
-    in {
-      formatter = pkgs.alejandra;
-
-      devShells = {
+  }: let
+    systems = nixpkgs.lib.platforms.unix;
+  in {
+    formatter = nixpkgs.lib.genAttrs systems (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+        pkgs.alejandra
+    );
+    devShells = nixpkgs.lib.genAttrs systems (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+        node = pkgs.nodejs_20;
+        corepackEnable = pkgs.runCommand "corepack-enable" {} ''
+          mkdir -p $out/bin
+          ${node}/bin/corepack enable --install-directory $out/bin
+        '';
+        rocPkgs = roc.packages.${system};
+      in {
         default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             (with ocamlPackages; [ocaml findlib dune_2 ocaml-lsp])
           ];
           buildInputs = with pkgs; [
-            nodejs
+            node
             corepackEnable
             bun
             python3
             (with ocamlPackages; [ocamlformat ocamlgraph])
-            (with rocPkgs; [cli lang-server])
+            (with rocPkgs; [full])
           ];
           shellHook = ''
-            export ROC_LSP_PATH=${rocPkgs.lang-server}/bin/roc_ls
+            export ROC_LSP_PATH=${rocPkgs.full}/bin/roc_language_server
           '';
         };
-      };
-    });
+      }
+    );
+  };
 }
